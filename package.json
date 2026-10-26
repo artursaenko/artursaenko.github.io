@@ -1,0 +1,19 @@
+{
+  "name": "artursaenko-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@astrojs/vue": "^5.1.4",
+    "@fontsource/instrument-sans": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "astro": "^5.18.2",
+    "vue": "^3.5.44"
+  }
+}

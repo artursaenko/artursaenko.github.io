@@ -1,0 +1,98 @@
+---
+import TextPage from "../layouts/TextPage.astro";
+---
+
+<TextPage
+  lang="de"
+  title="Testbericht"
+  description="Wie ich diese Website getestet habe: Ladezeit, Barrierefreiheit, Bildschirmgrößen, Datenschutz und die gefundenen Fehler."
+  alternate="/en/test-report/"
+>
+  <h1>Testbericht</h1>
+  <p>
+    Bevor diese Website online ging, habe ich sie so geprüft, wie ich auch eine Software für
+    Kundinnen und Kunden prüfen würde: mit klaren Kriterien, automatisierten Prüfungen und einer
+    Liste der gefundenen Fehler.
+  </p>
+  <p class="note">
+    Testdatum: 26.10.2026 · Umgebung: lokaler Produktions-Build · Chromium 141 · Lighthouse 12.8 ·
+    axe-core 4.14 · Playwright 1.56
+  </p>
+
+  <h2>Ergebnisse auf einen Blick</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Bereich</th><th>Kriterium</th><th>Ergebnis</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ladezeit</td><td>Lighthouse Performance, Mobil / Desktop</td><td>99 / 100</td></tr>
+        <tr><td>Ladezeit</td><td>Largest Contentful Paint, Mobil (gedrosselt)</td><td>1,7 s</td></tr>
+        <tr><td>Stabilität</td><td>Cumulative Layout Shift</td><td>0</td></tr>
+        <tr><td>Barrierefreiheit</td><td>Lighthouse Accessibility</td><td>100</td></tr>
+        <tr><td>Barrierefreiheit</td><td>axe-core, WCAG 2.1 A und AA, 4 Seiten</td><td>0 Verstöße</td></tr>
+        <tr><td>Qualität</td><td>Lighthouse Best Practices und SEO</td><td>100 / 100</td></tr>
+        <tr><td>Bildschirmgrößen</td><td>320 bis 1920 px Breite, ohne seitliches Scrollen</td><td>bestanden</td></tr>
+        <tr><td>Datenschutz</td><td>Anfragen an Drittanbieter, Cookies</td><td>keine / 0</td></tr>
+        <tr><td>Links</td><td>Alle internen Links erreichbar</td><td>bestanden</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Was ich geprüft habe</h2>
+  <ul>
+    <li>
+      <strong>Tastatur:</strong> Alle Links sind mit der Tab-Taste in sinnvoller Reihenfolge
+      erreichbar. Der erste Tab zeigt „Zum Inhalt springen“, der Fokus ist immer deutlich sichtbar.
+    </li>
+    <li>
+      <strong>Bewegung:</strong> Der animierte Hintergrund bleibt stehen, wenn im System „Bewegung
+      reduzieren“ eingestellt ist. Außerhalb des sichtbaren Bereichs und in Hintergrund-Tabs pausiert
+      er, um Akku zu sparen.
+    </li>
+    <li>
+      <strong>Sprachen:</strong> Deutsch und Englisch mit eigenen Adressen und korrekter
+      Sprachauszeichnung, damit Screenreader und Suchmaschinen die richtige Sprache erkennen.
+    </li>
+    <li>
+      <strong>Datenschutz:</strong> Schriften liegen auf dieser Website selbst. Beim Laden der Seite
+      wird kein anderer Server angefragt, es werden keine Cookies gesetzt.
+    </li>
+  </ul>
+
+  <h2>Gefundene Fehler und Behebung</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Fehler</th><th>Ursache</th><th>Behebung</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>axe meldet „region“: Inhalte außerhalb von Seitenbereichen (5 Stellen)</td>
+          <td>Der Kopfbereich mit Name und Links war kein ausgezeichneter Bereich</td>
+          <td>Kopfbereich als <code>&lt;header&gt;</code> ausgezeichnet</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Seitliches Scrollen bei 320 px Breite (27 px)</td>
+          <td>Das lange Wort „Anwendungsentwicklung“ passte nicht in die Zeile</td>
+          <td>Automatische Silbentrennung für Überschriften</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Link „Testbericht“ führte zu einer leeren Seite (404)</td>
+          <td>Seite war verlinkt, aber noch nicht angelegt</td>
+          <td>Diese Seite</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Nach den Korrekturen habe ich alle Prüfungen wiederholt. Die Ergebnisse oben stammen aus diesem zweiten Durchlauf.</p>
+
+  <h2>Noch offen</h2>
+  <ul>
+    <li>Automatisiert getestet habe ich nur in Chromium. Firefox und Safari prüfe ich als Nächstes von Hand.</li>
+    <li>Die Ladezeit habe ich lokal gemessen. Auf GitHub Pages können die Werte leicht abweichen.</li>
+  </ul>
+</TextPage>

@@ -1,0 +1,67 @@
+---
+import "@fontsource/instrument-sans/400.css";
+import "@fontsource/instrument-sans/500.css";
+import "@fontsource/instrument-sans/600.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "../styles/global.css";
+import { content, links, type Lang } from "../i18n/content";
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  alternate?: string; // path of the same page in the other language
+  noindex?: boolean;
+}
+
+const { lang, title, description, alternate, noindex = false } = Astro.props;
+const t = content[lang];
+const pageTitle = title ? `${title} · Artur Saienko` : t.meta.title;
+const pageDescription = description ?? t.meta.description;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const otherLang: Lang = lang === "de" ? "en" : "de";
+
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Artur Saienko",
+  jobTitle: lang === "de" ? "IT-Support & Softwaretest" : "IT support & software testing",
+  address: { "@type": "PostalAddress", addressLocality: "Leipzig", addressCountry: "DE" },
+  email: `mailto:${links.email}`,
+  url: Astro.site?.href,
+  sameAs: [links.linkedin, links.github],
+  knowsLanguage: ["de", "en", "uk", "ru"],
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    {
+      alternate && (
+        <>
+          <link rel="alternate" hreflang={lang} href={canonical} />
+          <link rel="alternate" hreflang={otherLang} href={new URL(alternate, Astro.site).href} />
+        </>
+      )
+    }
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#17191c" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === "de" ? "de_DE" : "en_US"} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.skip}</a>
+    <slot />
+  </body>
+</html>

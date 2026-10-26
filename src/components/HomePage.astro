@@ -1,0 +1,671 @@
+---
+import fs from "node:fs";
+import Base from "../layouts/Base.astro";
+import Icon from "./Icon.astro";
+import SiteFooter from "./SiteFooter.astro";
+import NetworkBackground from "./NetworkBackground.vue";
+import { content, links, paths, type Lang } from "../i18n/content";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = content[lang];
+const other: Lang = lang === "de" ? "en" : "de";
+
+// Photo and CV files are optional: the page only links to what is really in public/
+const has = (file: string) => fs.existsSync(new URL(`../../public/${file}`, import.meta.url));
+const photo = has("img/artur.jpg") ? "/img/artur.jpg" : null;
+const cvDe = has("cv/Lebenslauf_Artur_Saienko.pdf") ? "/cv/Lebenslauf_Artur_Saienko.pdf" : null;
+const cvEn = has("cv/CV_Artur_Saienko_EN.pdf") ? "/cv/CV_Artur_Saienko_EN.pdf" : null;
+const cvMain = lang === "de" ? cvDe ?? cvEn : cvEn ?? cvDe;
+
+const projectIcons: Record<string, string> = { whiteboard: "board", bot: "table", site: "check" };
+const isExternal = (href: string) => href.startsWith("http");
+---
+
+<Base lang={lang} alternate={paths[other].home}>
+  <header class="hero" id="top">
+    <NetworkBackground client:idle />
+    <div class="topbar wrap">
+      <a class="brand" href={paths[lang].home}>Artur Saienko</a>
+      <nav aria-label={lang === "de" ? "Hauptnavigation" : "Main navigation"}>
+        <ul>
+          <li><a href="#about">{t.nav.about}</a></li>
+          <li><a href="#projects">{t.nav.projects}</a></li>
+          <li><a href="#experience">{t.nav.experience}</a></li>
+          <li><a href="#contact">{t.nav.contact}</a></li>
+          <li>
+            <a class="lang" href={paths[other].home} hreflang={other} lang={other}>
+              <span class="visually-hidden">{t.langSwitch.label}: {t.langSwitch.otherName}</span>
+              <span aria-hidden="true">{t.langSwitch.other}</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="hero-body">
+      {
+        photo ? (
+          <img class="avatar" src={photo} alt={t.hero.photoAlt} width="150" height="150" />
+        ) : (
+          <div class="avatar avatar-initials" aria-hidden="true">AS</div>
+        )
+      }
+      <h1>Artur Saienko</h1>
+      <p class="subtitle">{t.hero.subtitle}</p>
+      <p class="meta">{t.hero.meta}</p>
+      <ul class="socials">
+        <li>
+          <a href={links.linkedin} aria-label={t.hero.social.linkedin} title={t.hero.social.linkedin}>
+            <Icon name="linkedin" />
+          </a>
+        </li>
+        <li>
+          <a href={`mailto:${links.email}`} aria-label={t.hero.social.email} title={t.hero.social.email}>
+            <Icon name="mail" />
+          </a>
+        </li>
+        <li>
+          <a href={links.github} aria-label={t.hero.social.github} title={t.hero.social.github}>
+            <Icon name="github" />
+          </a>
+        </li>
+        {
+          cvMain && (
+            <li>
+              <a href={cvMain} aria-label={t.hero.social.cv} title={t.hero.social.cv}>
+                <Icon name="file" />
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="about" class="about" aria-labelledby="about-title">
+      <div class="narrow">
+        <h2 id="about-title" class="visually-hidden">{t.about.title}</h2>
+        {t.about.paragraphs.map((p) => <p class="lead">{p}</p>)}
+        <div class="facts">
+          <div>
+            <h3>{t.about.skillsTitle}</h3>
+            <ul class="chips">
+              {t.about.skills.map((s) => <li>{s}</li>)}
+            </ul>
+          </div>
+          <div>
+            <h3>{t.about.languagesTitle}</h3>
+            <ul class="chips">
+              {t.about.languages.map((s) => <li>{s}</li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="band" id="projects"><h2>{t.projects.band}</h2></div>
+
+    <section class="projects" aria-labelledby="projects-title">
+      <div class="wrap">
+        <h3 id="projects-title" class="section-title">{t.projects.title}</h3>
+        <div class="cards">
+          {
+            t.projects.items.map((item) => (
+              <article class={`card card-${item.key}`}>
+                <div class="card-body">
+                  <div class="card-icon" aria-hidden="true">
+                    <Icon name={projectIcons[item.key]} size={32} />
+                  </div>
+                  <h4>{item.title}</h4>
+                  <p>{item.text}</p>
+                </div>
+                <div class="card-actions">
+                  {item.actions.map((a) => (
+                    <a
+                      class={a.primary ? "card-btn primary" : "card-btn"}
+                      href={a.href}
+                      {...(isExternal(a.href) ? { rel: "noopener" } : {})}
+                    >
+                      {a.label}
+                    </a>
+                  ))}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="experience" class="experience" aria-labelledby="experience-title">
+      <div class="wrap">
+        <h3 id="experience-title" class="section-title">{t.experience.title}</h3>
+        <ol class="timeline">
+          {
+            t.experience.items.map((item, i) => (
+              <li class={i % 2 === 0 ? "tl-row left" : "tl-row right"}>
+                <div class="tl-card">
+                  <h4>{item.title}</h4>
+                  <p class="tl-place">{item.place}</p>
+                  <p>{item.text}</p>
+                </div>
+                <div class={`tl-icon tl-${item.icon}`} aria-hidden="true">
+                  <Icon name={item.icon} />
+                </div>
+                <p class="tl-date">{item.date}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <div class="band" id="contact"><h2>{t.contact.band}</h2></div>
+
+    <section class="contact" aria-label={t.contact.band}>
+      <div class="narrow">
+        <p>{t.contact.text}</p>
+        <a class="mail" href={`mailto:${links.email}`}>{links.email}</a>
+        <div class="contact-actions">
+          {cvDe && <a class="btn btn-dark" href={cvDe}>{t.contact.cvDe}</a>}
+          {cvEn && <a class="btn btn-outline" href={cvEn}>{t.contact.cvEn}</a>}
+          <a class="btn btn-outline" href={links.linkedin}>LinkedIn</a>
+          <a class="btn btn-outline" href={links.github}>GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter lang={lang} cvDe={cvDe} cvEn={cvEn} />
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--dark);
+    color: var(--on-dark);
+    padding-bottom: 96px;
+  }
+
+  .topbar {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px 24px;
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+
+  .brand {
+    color: var(--on-dark);
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .topbar ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .topbar nav a {
+    color: var(--on-dark);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 6px 0;
+  }
+
+  .topbar nav a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+  }
+
+  .topbar nav a.lang {
+    font-family: var(--mono);
+    letter-spacing: 0;
+    border: 1px solid var(--dark-line);
+    border-radius: 8px;
+    padding: 6px 10px;
+  }
+
+  .hero-body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 18px;
+    padding: 64px 24px 0;
+  }
+
+  .avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--dark-line);
+  }
+
+  .avatar-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2a2f36;
+    font-size: 44px;
+    font-weight: 600;
+    color: var(--on-dark-muted);
+  }
+
+  .hero h1 {
+    font-size: clamp(44px, 8vw, 76px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-top: 6px;
+  }
+
+  .subtitle {
+    font-size: clamp(20px, 3vw, 26px);
+    color: #d5dae1;
+  }
+
+  .meta {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--on-dark-muted);
+  }
+
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .socials a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 1px solid var(--dark-line);
+    color: var(--on-dark);
+    background: rgba(23, 25, 28, 0.6);
+  }
+
+  .socials a:hover {
+    border-color: var(--on-dark);
+    color: #ffffff;
+  }
+
+  .about {
+    padding: 72px 0;
+  }
+
+  .lead {
+    font-size: 19px;
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px;
+    margin-top: 36px;
+  }
+
+  .facts h3 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chips li {
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    font-size: 15px;
+  }
+
+  .projects {
+    padding: 64px 0 24px;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px;
+    border-radius: 16px;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card h4 {
+    font-size: 22px;
+  }
+
+  .card p {
+    line-height: 1.6;
+  }
+
+  .card-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .card-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    border: 1px solid currentColor;
+  }
+
+  .card-whiteboard {
+    background: var(--accent-dark);
+    color: #ffffff;
+  }
+
+  .card-whiteboard p {
+    color: #dce4fa;
+  }
+
+  .card-whiteboard .card-icon {
+    background: #2b4cb0;
+  }
+
+  .card-whiteboard .card-btn {
+    color: #ffffff;
+  }
+
+  .card-whiteboard .card-btn.primary {
+    background: #ffffff;
+    color: var(--accent-dark);
+    border-color: #ffffff;
+  }
+
+  .card-bot {
+    background: var(--green);
+    color: #ffffff;
+  }
+
+  .card-bot p {
+    color: #d3ebdc;
+  }
+
+  .card-bot .card-icon {
+    background: #1f6b3d;
+  }
+
+  .card-bot .card-btn {
+    color: #ffffff;
+  }
+
+  .card-bot .card-btn.primary {
+    background: #ffffff;
+    color: var(--green);
+    border-color: #ffffff;
+  }
+
+  .card-site {
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+
+  .card-site p {
+    color: #444b55;
+  }
+
+  .card-site .card-icon {
+    background: var(--amber-bg);
+    color: var(--amber);
+  }
+
+  .card-site .card-btn {
+    color: var(--ink);
+  }
+
+  .card-site .card-btn.primary {
+    background: var(--dark);
+    color: #ffffff;
+    border-color: var(--dark);
+  }
+
+  .experience {
+    padding: 56px 0 72px;
+  }
+
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tl-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 80px minmax(0, 1fr);
+    position: relative;
+  }
+
+  .tl-row::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    margin-left: -1.5px;
+    background: #c9cfd7;
+  }
+
+  .tl-row:first-child::before {
+    top: 26px;
+  }
+
+  .tl-row:last-child::before {
+    bottom: auto;
+    height: 26px;
+  }
+
+  .tl-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 36px;
+  }
+
+  .tl-card h4 {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .tl-place {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .tl-card p:last-child {
+    color: var(--ink-soft);
+    font-size: 17px;
+  }
+
+  .tl-icon {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 3px solid var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e3e8f0;
+    color: var(--accent-dark);
+  }
+
+  .tl-badge {
+    background: var(--amber-bg);
+    color: var(--amber);
+  }
+
+  .tl-headset,
+  .tl-box {
+    background: #dcefe3;
+    color: var(--green);
+  }
+
+  .tl-date {
+    grid-row: 1;
+    padding-top: 14px;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .tl-row.left .tl-card {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .tl-row.left .tl-date {
+    grid-column: 3;
+  }
+
+  .tl-row.right .tl-card {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .tl-row.right .tl-date {
+    grid-column: 1;
+    text-align: right;
+  }
+
+  @media (max-width: 820px) {
+    .tl-row {
+      grid-template-columns: 56px minmax(0, 1fr);
+    }
+
+    .tl-row::before {
+      left: 28px;
+    }
+
+    .tl-icon {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      align-self: start;
+      width: 44px;
+      height: 44px;
+    }
+
+    .tl-row.left .tl-date,
+    .tl-row.right .tl-date {
+      grid-column: 2;
+      grid-row: 1;
+      text-align: left;
+      padding-top: 10px;
+      padding-bottom: 8px;
+    }
+
+    .tl-row.left .tl-card,
+    .tl-row.right .tl-card {
+      grid-column: 2;
+      grid-row: 2;
+      margin-bottom: 28px;
+    }
+  }
+
+  .contact {
+    padding: 64px 0;
+    text-align: center;
+  }
+
+  .contact .narrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .contact p {
+    font-size: 19px;
+  }
+
+  .mail {
+    font-size: clamp(20px, 4vw, 26px);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 6px;
+  }
+</style>

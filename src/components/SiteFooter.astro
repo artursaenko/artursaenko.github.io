@@ -1,0 +1,95 @@
+---
+import { content, paths, type Lang } from "../i18n/content";
+
+interface Props {
+  lang: Lang;
+  cvDe?: string | null;
+  cvEn?: string | null;
+}
+const { lang, cvDe = null, cvEn = null } = Astro.props;
+const t = content[lang];
+const home = paths[lang].home;
+---
+
+<footer class="site-footer">
+  <div class="wrap cols">
+    <div>
+      <h2>{t.footer.pages}</h2>
+      <ul>
+        <li><a href={home}>Start</a></li>
+        <li><a href={`${home}#projects`}>{t.nav.projects}</a></li>
+        <li><a href={`${home}#experience`}>{t.nav.experience}</a></li>
+        <li><a href={`${home}#contact`}>{t.nav.contact}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>{t.footer.documents}</h2>
+      <ul>
+        {cvDe && <li><a href={cvDe}>{t.contact.cvDe}</a></li>}
+        {cvEn && <li><a href={cvEn}>{t.contact.cvEn}</a></li>}
+        <li><a href={paths[lang].testReport}>{t.footer.testReport}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>{t.footer.legal}</h2>
+      <ul>
+        <li><a href="/impressum/" hreflang="de">{t.footer.imprint}</a></li>
+        <li><a href="/datenschutz/" hreflang="de">{t.footer.privacy}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap bottom">
+    <span>© 2026 Artur Saienko · {t.footer.updated}</span>
+    <span>{t.footer.credit}</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--dark);
+    color: #c9cfd7;
+    padding: 48px 0 32px;
+  }
+
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+  }
+
+  h2 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-dark);
+    margin-bottom: 12px;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    line-height: 2;
+  }
+
+  a {
+    color: #c9cfd7;
+  }
+
+  a:hover {
+    color: #ffffff;
+  }
+
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid #2f343b;
+    font-size: 14px;
+    color: var(--on-dark-muted);
+  }
+</style>

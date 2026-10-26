@@ -1,0 +1,32 @@
+---
+import TextPage from "../layouts/TextPage.astro";
+import { legal, links } from "../i18n/content";
+---
+
+<TextPage lang="de" title="Impressum" noindex>
+  <h1>Impressum</h1>
+  <p>
+    Diese Website ist eine private Bewerbungs- und Portfolioseite. Sie dient keinem gewerblichen
+    Zweck.
+  </p>
+
+  <h2>Verantwortlich für den Inhalt</h2>
+  <p>
+    {legal.name}
+    {legal.address.map((line) => (
+      <>
+        <br />
+        {line}
+      </>
+    ))}
+  </p>
+
+  <h2>Kontakt</h2>
+  <p>E-Mail: <a href={`mailto:${links.email}`}>{links.email}</a></p>
+
+  <h2>Haftung für Links</h2>
+  <p>
+    Diese Website enthält Links zu externen Seiten wie GitHub und LinkedIn. Für deren Inhalte sind
+    ausschließlich die jeweiligen Anbieter verantwortlich.
+  </p>
+</TextPage>
