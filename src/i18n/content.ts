@@ -15,7 +15,7 @@ export const links = {
 // Optional: postal address for the Impressum. Leave empty to show name and e-mail only.
 export const legal = {
   name: "Artur Saienko",
-  address: [] as string[],
+  address: ["Berliner Str. 10", "04105 Leipzig"] as string[],
 };
 
 const de = {

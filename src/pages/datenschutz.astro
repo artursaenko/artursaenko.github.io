@@ -16,6 +16,12 @@ import { legal, links } from "../i18n/content";
   <h2>Verantwortlicher</h2>
   <p>
     {legal.name}<br />
+    {legal.address.map((line) => (
+      <>
+        {line}
+        <br />
+      </>
+    ))}
     E-Mail: <a href={`mailto:${links.email}`}>{links.email}</a>
   </p>
 
