@@ -90,15 +90,24 @@ const isExternal = (href: string) => href.startsWith("http");
       <div class="narrow">
         <h2 id="about-title" class="visually-hidden">{t.about.title}</h2>
         {t.about.paragraphs.map((p) => <p class="lead">{p}</p>)}
+      </div>
+      <div class="wrap skills">
+        <h3 class="skills-title">{t.about.skillsHeading}</h3>
         <div class="facts">
-          <div>
-            <h3>{t.about.skillsTitle}</h3>
-            <ul class="chips">
-              {t.about.skills.map((s) => <li>{s}</li>)}
-            </ul>
-          </div>
-          <div>
-            <h3>{t.about.languagesTitle}</h3>
+          {
+            t.about.skillGroups.map((group) => (
+              <div class="group">
+                <h4>{group.title}</h4>
+                <ul class="chips">
+                  {group.items.map((s) => (
+                    <li>{s}</li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+          <div class="group">
+            <h4>{t.about.languagesTitle}</h4>
             <ul class="chips">
               {t.about.languages.map((s) => <li>{s}</li>)}
             </ul>
@@ -328,14 +337,30 @@ const isExternal = (href: string) => href.startsWith("http");
     margin-bottom: 18px;
   }
 
-  .facts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 28px;
-    margin-top: 36px;
+  .skills {
+    margin-top: 48px;
   }
 
-  .facts h3 {
+  .skills-title {
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    gap: 20px;
+  }
+
+  .group {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+  }
+
+  .facts h4 {
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -356,7 +381,7 @@ const isExternal = (href: string) => href.startsWith("http");
   .chips li {
     padding: 6px 12px;
     border-radius: 8px;
-    background: var(--card);
+    background: var(--paper);
     border: 1px solid var(--line);
     font-size: 15px;
   }
