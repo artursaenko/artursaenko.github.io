@@ -143,7 +143,6 @@ const de = {
     imprint: "Impressum",
     privacy: "Datenschutz",
     testReport: "Testbericht",
-    credit: "Aufbau inspiriert von dtc-website von Diogo Correia (MIT)",
     updated: "Zuletzt aktualisiert: 10/2026",
   },
 };
@@ -273,7 +272,6 @@ const en: typeof de = {
     imprint: "Impressum (German)",
     privacy: "Privacy policy (German)",
     testReport: "Test report",
-    credit: "Layout inspired by dtc-website by Diogo Correia (MIT)",
     updated: "Last updated: 10/2026",
   },
 };
