@@ -22,5 +22,3 @@ npm run build   # Ausgabe in docs/ für GitHub Pages
 ```
 
 GitHub Pages: Settings → Pages → Deploy from a branch → `main`, Ordner `/docs`.
-
-Der Aufbau der Startseite ist von [dtc-website](https://github.com/diogotcorreia/dtc-website) von Diogo Correia inspiriert (MIT).
